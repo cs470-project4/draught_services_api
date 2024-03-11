@@ -1,5 +1,5 @@
 // MarketsController.js
-const pool = require("../../database/mySQLconnect");
+const pool = require("../../database/dbConnect");
 
 const allMarkets = async (ctx) => {
   try {

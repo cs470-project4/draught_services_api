@@ -4,6 +4,7 @@ const LoginController = require("../app/Controllers/LoginController.js");
 const RoutesController = require("../app/Controllers/RoutesController.js");
 const MarketsController = require("../app/Controllers/MarketsController.js");
 const EmployeesController = require("../app/Controllers/EmployeesController.js");
+const TransactionsController = require("../app/Controllers/TransactionsController.js");
 
 /*
 |--------------------------------------------------------------------------
@@ -89,10 +90,44 @@ marketsRouter.get("/all-markets", MarketsController.allMarkets);
 */
 
 const employeesRouter = require("koa-router")({
-    prefix: "/employees",
+  prefix: "/employees",
 });
 employeesRouter.use(VerifyJWT);
 employeesRouter.get("/all-employees", EmployeesController.allEmployees);
+
+/*
+|--------------------------------------------------------------------------
+| Transactions Router Configuration
+|--------------------------------------------------------------------------
+|
+| Handles routes related to transactions entities.
+|
+*/
+
+const transactionsRouter = require("koa-router")({
+  prefix: "/transactions",
+});
+transactionsRouter.use(VerifyJWT);
+transactionsRouter.get(
+  "/count/",
+  TransactionsController.getCurrentCycleTransactionsCount
+);
+transactionsRouter.get(
+  "/account/:accountID/",
+  TransactionsController.getTransactionsForAccountGivenInCurrentCycle
+);
+transactionsRouter.get(
+  "/route/:routeID/",
+  TransactionsController.getTransactionsForRouteGivenInCurrentCycle
+);
+transactionsRouter.get(
+  "/allRoutes",
+  TransactionsController.getTransactionsForAllRoutesInCurrentCycle
+);
+transactionsRouter.get(
+  "/market/:marketID/",
+  TransactionsController.getTransactionsForMarketGivenInCurrentCycle
+);
 
 /*
 |--------------------------------------------------------------------------
@@ -102,7 +137,14 @@ employeesRouter.get("/all-employees", EmployeesController.allEmployees);
 | This includes login, routes, and markets routers.
 |
 */
-router.use("", loginRouter.routes(), routesRouter.routes(), marketsRouter.routes(), employeesRouter.routes());
+router.use(
+  "",
+  loginRouter.routes(),
+  routesRouter.routes(),
+  marketsRouter.routes(),
+  employeesRouter.routes(),
+  transactionsRouter.routes()
+);
 
 module.exports = function (app) {
   app.use(router.routes());

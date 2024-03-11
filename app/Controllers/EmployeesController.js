@@ -1,5 +1,5 @@
 // EmployeesController.js
-const pool = require("../../database/mySQLconnect");
+const pool = require("../../database/dbConnect");
 
 const allEmployees = async (ctx) => {
     try { 
