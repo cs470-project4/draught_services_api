@@ -5,6 +5,7 @@ const RoutesController = require("../app/Controllers/RoutesController.js");
 const MarketsController = require("../app/Controllers/MarketsController.js");
 const EmployeesController = require("../app/Controllers/EmployeesController.js");
 const TransactionsController = require("../app/Controllers/TransactionsController.js");
+const CyclesController = require("../app/Controllers/CyclesController.js");
 
 /*
 |--------------------------------------------------------------------------
@@ -109,25 +110,41 @@ const transactionsRouter = require("koa-router")({
 });
 transactionsRouter.use(VerifyJWT);
 transactionsRouter.get(
-  "/count/",
-  TransactionsController.getCurrentCycleTransactionsCount
+  "/:cycleID",
+  TransactionsController.getTransactionsForCycle
 );
 transactionsRouter.get(
-  "/account/:accountID/",
-  TransactionsController.getTransactionsForAccountGivenInCurrentCycle
+  "/:cycleID/:accountID/one-account",
+  TransactionsController.getTransactionsForAccountGiven
 );
 transactionsRouter.get(
   "/route/:routeID/",
-  TransactionsController.getTransactionsForRouteGivenInCurrentCycle
+  TransactionsController.getTransactionsForRouteGiven
 );
 transactionsRouter.get(
-  "/allRoutes",
-  TransactionsController.getTransactionsForAllRoutesInCurrentCycle
+  "/all-routes",
+  TransactionsController.getTransactionsForAllRoutes
 );
 transactionsRouter.get(
   "/market/:marketID/",
-  TransactionsController.getTransactionsForMarketGivenInCurrentCycle
+  TransactionsController.getTransactionsForMarketGiven
 );
+
+/*
+|--------------------------------------------------------------------------
+| Cycles Router Configuration
+|--------------------------------------------------------------------------
+|
+| Handles routes related to cycles entities.
+|
+*/
+
+const cyclesRouter = require("koa-router")({
+  prefix: "/cycles",
+});
+
+cyclesRouter.use(VerifyJWT);
+cyclesRouter.get("/last-five", CyclesController.fiveCycles);
 
 /*
 |--------------------------------------------------------------------------
@@ -143,7 +160,8 @@ router.use(
   routesRouter.routes(),
   marketsRouter.routes(),
   employeesRouter.routes(),
-  transactionsRouter.routes()
+  transactionsRouter.routes(),
+  cyclesRouter.routes(),
 );
 
 module.exports = function (app) {
