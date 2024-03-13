@@ -17,12 +17,12 @@ const getAccountsForCycle = async (ctx) => {
     try {
         const { cycleID } = ctx.params;
         const query = `
-            SELECT a.*
+            SELECT a.*, t."cycleID"
             FROM accounts a
-            JOIN transactions t ON a.accountID = t.accountID
-            WHERE t.cycleID = $1
-            GROUP BY a.accountID
-            ORDER BY a.accountName;`;
+            JOIN transactions t ON a."accountID" = t."accountID"
+            WHERE t."cycleID" = $1
+            GROUP BY a."accountID", t."cycleID"
+            ORDER BY a."accountName";`;
         const result = await pool.query(query, [cycleID]);
         ctx.body = result.rows;
         ctx.status = 200;
