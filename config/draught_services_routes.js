@@ -145,6 +145,9 @@ const cyclesRouter = require("koa-router")({
 
 cyclesRouter.use(VerifyJWT);
 cyclesRouter.get("/last-five", CyclesController.fiveCycles);
+cyclesRouter.get(
+  "/:cycleID/accounts",
+  CyclesController.getAccountsForCycle);
 
 /*
 |--------------------------------------------------------------------------
