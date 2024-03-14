@@ -65,6 +65,7 @@ routesRouter.get(
   Authorize("admin"),
   RoutesController.routeWithRouteID
 );
+routesRouter.get("/:cycleID/routes", RoutesController.routesWithTransactionsInCycle);
 
 /*
 |--------------------------------------------------------------------------
@@ -118,7 +119,7 @@ transactionsRouter.get(
   TransactionsController.getTransactionsForAccountGiven
 );
 transactionsRouter.get(
-  "/route/:routeID/",
+  "/:cycleID/:routeID/trans-for-route",
   TransactionsController.getTransactionsForRouteGiven
 );
 transactionsRouter.get(

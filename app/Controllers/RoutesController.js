@@ -63,7 +63,35 @@ const routeWithRouteID = async (ctx) => {
   });
 };
 
+const routesWithTransactionsInCycle = async (ctx) => {
+  try {
+    const { cycleID } = ctx.params;
+    const query = `
+      SELECT DISTINCT r."routeID", r."routeName"
+      FROM routes r
+      JOIN transactions t ON r."routeID" = t."routeID"
+      WHERE t."cycleID" = $1
+      ORDER BY r."routeName" ASC;
+    `;
+    const result = await pool.query(query, [cycleID]);
+    ctx.body =
+      result.rows.length > 0
+        ? { data: result.rows }
+        : { message: "No routes found for this cycle." };
+    ctx.status = 200;
+  } catch (error) {
+    console.log(
+      "Connection error in RoutesController::routesWithTransactionsInCycle",
+      error
+    );
+    ctx.body = { error };
+    ctx.status = 500;
+  }
+};
+
+
 module.exports = {
     allRoutes,
-    routeWithRouteID,
+  routeWithRouteID,
+  routesWithTransactionsInCycle,
 };

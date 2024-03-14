@@ -48,15 +48,21 @@ const getTransactionsForAccountGiven = async (ctx) => {
 // route return all transactions for route given by routeID in current cycle. (3)
 const getTransactionsForRouteGiven = async (ctx) => {
     try {
-        const { routeID } = ctx.params;
-        const query = `SELECT * FROM transactions WHERE "routeID" = $1 AND "cycleID" = (SELECT MAX("cycleID") - 1 FROM cycles)`;
-        const result = await pool.query(query, [routeID]);
+        const { routeID, cycleID } = ctx.params;
+        const query = `
+          SELECT t.*, r."routeName" 
+          FROM transactions t
+          JOIN routes r ON t."routeID" = r."routeID"
+          WHERE t."routeID" = $1 AND t."cycleID" = $2
+          ORDER BY t."transactionDate" ASC;
+        `;
+        const result = await pool.query(query, [routeID, cycleID]);
         ctx.body = result.rows;
         ctx.status = 200;
         
     } catch (error) {
         console.log(
-            "getTransactionsForRouteGivenInCurrentCycle threw an exception. Reason...",
+            "getTransactionsForRouteGiven threw an exception. Reason...",
             error
         );
         ctx.status = 500;
