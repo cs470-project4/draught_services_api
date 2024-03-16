@@ -7,6 +7,7 @@ const EmployeesController = require("../app/Controllers/EmployeesController.js")
 const TransactionsController = require("../app/Controllers/TransactionsController.js");
 const CyclesController = require("../app/Controllers/CyclesController.js");
 const SummaryController = require("../app/Controllers/SummaryController.js");
+const AccountsController = require("../app/Controllers/AccountsController.js");
 
 /*
 |--------------------------------------------------------------------------
@@ -176,6 +177,21 @@ summaryRouter.get(
 
 /*
 |--------------------------------------------------------------------------
+| Account Router Configuration
+|--------------------------------------------------------------------------
+|
+| Handles accounts entities.
+|
+*/
+
+const accountsRouter = require("koa-router")({
+  prefix: "/accounts",
+});
+accountsRouter.use(VerifyJWT);
+accountsRouter.get("/active", AccountsController.allActiveAccounts);
+
+/*
+|--------------------------------------------------------------------------
 | Register all of the controllers into the default controller.
 |--------------------------------------------------------------------------
 |
@@ -191,6 +207,7 @@ router.use(
   transactionsRouter.routes(),
   cyclesRouter.routes(),
   summaryRouter.routes(),
+  accountsRouter.routes(),
 );
 
 module.exports = function (app) {
