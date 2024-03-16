@@ -67,17 +67,14 @@ const routesWithTransactionsInCycle = async (ctx) => {
   try {
     const { cycleID } = ctx.params;
     const query = `
-      SELECT DISTINCT r."routeID", r."routeName"
+      SELECT DISTINCT t."routeID", r."routeName", t."marketID", r."status", r."lastModified", t."cycleID"
       FROM routes r
       JOIN transactions t ON r."routeID" = t."routeID"
       WHERE t."cycleID" = $1
       ORDER BY r."routeName" ASC;
     `;
     const result = await pool.query(query, [cycleID]);
-    ctx.body =
-      result.rows.length > 0
-        ? { data: result.rows }
-        : { message: "No routes found for this cycle." };
+    ctx.body = result.rows;
     ctx.status = 200;
   } catch (error) {
     console.log(

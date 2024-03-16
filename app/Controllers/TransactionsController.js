@@ -73,8 +73,15 @@ const getTransactionsForRouteGiven = async (ctx) => {
 // route return all transactions for all routes in current cycle. (4)
 const getTransactionsForAllRoutes = async (ctx) => {
     try {
-        const query = `SELECT * FROM transactions WHERE "cycleID" = (SELECT MAX("cycleID") - 1 FROM cycles)`;
-        const result = await pool.query(query);
+        const { cycleID } = ctx.params;
+        const query = `
+          SELECT t.*, r."routeName"
+          FROM transactions t
+          JOIN routes r ON t."routeID" = r."routeID"
+          WHERE t."cycleID" = $1
+          ORDER BY r."routeName", t."transactionDate" ASC;
+        `;
+        const result = await pool.query(query, [cycleID]);
         ctx.body = result.rows;
         ctx.status = 200;
         

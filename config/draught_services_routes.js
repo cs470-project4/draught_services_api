@@ -123,7 +123,7 @@ transactionsRouter.get(
   TransactionsController.getTransactionsForRouteGiven
 );
 transactionsRouter.get(
-  "/all-routes",
+  "/:cycleID/all-routes",
   TransactionsController.getTransactionsForAllRoutes
 );
 transactionsRouter.get(
