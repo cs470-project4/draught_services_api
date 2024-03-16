@@ -6,6 +6,7 @@ const MarketsController = require("../app/Controllers/MarketsController.js");
 const EmployeesController = require("../app/Controllers/EmployeesController.js");
 const TransactionsController = require("../app/Controllers/TransactionsController.js");
 const CyclesController = require("../app/Controllers/CyclesController.js");
+const SummaryController = require("../app/Controllers/SummaryController.js");
 
 /*
 |--------------------------------------------------------------------------
@@ -152,6 +153,29 @@ cyclesRouter.get(
 
 /*
 |--------------------------------------------------------------------------
+| summary router
+|--------------------------------------------------------------------------
+|
+| Handles routes related to summary functionality.
+|
+*/
+
+const summaryRouter = require("koa-router")({
+  prefix: "/summary",
+});
+
+summaryRouter.use(VerifyJWT);
+summaryRouter.get(
+  "/total",
+  SummaryController.getTotalTransactionsForLatestCycle
+);
+summaryRouter.get(
+  "/top-products",
+  SummaryController.getTopProductsByTapsForLatestCycle
+);
+
+/*
+|--------------------------------------------------------------------------
 | Register all of the controllers into the default controller.
 |--------------------------------------------------------------------------
 |
@@ -166,6 +190,7 @@ router.use(
   employeesRouter.routes(),
   transactionsRouter.routes(),
   cyclesRouter.routes(),
+  summaryRouter.routes(),
 );
 
 module.exports = function (app) {
