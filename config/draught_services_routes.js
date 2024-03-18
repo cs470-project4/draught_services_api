@@ -83,6 +83,7 @@ const marketsRouter = require("koa-router")({
 });
 marketsRouter.use(VerifyJWT);
 marketsRouter.get("/all-markets", MarketsController.allMarkets);
+marketsRouter.get("/:cycleID/markets", MarketsController.getMarketTransactionsInCycle);
 
 /*
 |--------------------------------------------------------------------------
@@ -131,6 +132,10 @@ transactionsRouter.get(
 transactionsRouter.get(
   "/market/:marketID/",
   TransactionsController.getTransactionsForMarketGiven
+);
+transactionsRouter.get(
+  "/:cycleID/:marketID/trans-for-market",
+  TransactionsController.getTransactionsForMarketGivenInCurrentCycle
 );
 
 /*

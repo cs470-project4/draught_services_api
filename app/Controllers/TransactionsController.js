@@ -114,10 +114,37 @@ const getTransactionsForMarketGiven = async (ctx) => {
     }
 };
 
+const getTransactionsForMarketGivenInCurrentCycle = async (ctx) => {
+    try {
+        const { cycleID, marketID } = ctx.params;
+        const query = `
+            SELECT t.*, a."accountName", p."productName"
+            FROM transactions t
+            JOIN accounts a ON t."accountID" = a."accountID"
+            JOIN products p ON t."productID" = p."productID"
+            WHERE t."marketID" = $1 AND t."cycleID" = $2
+            ORDER BY t."transactionDate" ASC;
+        `;
+
+        const result = await pool.query(query, [marketID, cycleID]);
+        ctx.body = result.rows;
+        ctx.status = 200;
+        
+    } catch (error) {
+        console.log(
+            "getTransactionsForMarketGivenInCurrentCycle threw an exception. Reason...",
+            error
+        );
+        ctx.status = 500;
+        ctx.body = { error };
+    }
+}
+
 module.exports = {
   getTransactionsForCycle,
   getTransactionsForAccountGiven,
   getTransactionsForRouteGiven,
   getTransactionsForAllRoutes,
-  getTransactionsForMarketGiven,
+    getTransactionsForMarketGiven,
+    getTransactionsForMarketGivenInCurrentCycle,
 };
